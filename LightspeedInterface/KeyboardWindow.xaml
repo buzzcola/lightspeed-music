@@ -1,0 +1,8 @@
+﻿<Window x:Class="LightspeedInterface.Keyboard"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Virtual Keyboard" Height="182" Width="1400">
+    <Grid Name="grdKeyboard">
+        
+    </Grid>
+</Window>
