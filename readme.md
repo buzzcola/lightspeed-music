@@ -35,5 +35,5 @@ practice routine it's made a big difference in my sight reading.  I hope it help
 
 Future Goals
 ------------
-* A more beautiful interface design would be nice.  Since I'm not much of a designer I've erred on the side of 
+* A more beautiful interface design would be nice.  Since I'm not much of a designer I've erred on the side of simplicity.
 * Real-time audio input with pitch recognition: would allow support for non-MIDI instruments to be added.
