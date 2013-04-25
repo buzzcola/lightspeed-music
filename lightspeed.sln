@@ -12,15 +12,15 @@ EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "LightspeedInstaller", "LightspeedInstaller\LightspeedInstaller.vdproj", "{655BF461-9D22-4CC9-B6CD-5024C5DC7DDE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{73B5DAF5-A7BE-40B9-B854-DAD0D68193AA}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		readme.txt = readme.txt
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Media", "Media", "{FFFE7055-73E3-43BE-BE78-43B634C1D928}"
 	ProjectSection(SolutionItems) = preProject
 		Media\lightspeed_logo.svg = Media\lightspeed_logo.svg
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documents", "Documents", "{F171BD8A-1482-4AEB-BC0A-274FC68CCB4D}"
-	ProjectSection(SolutionItems) = preProject
-		Documents\readme.txt = Documents\readme.txt
 	EndProjectSection
 EndProject
 Global
