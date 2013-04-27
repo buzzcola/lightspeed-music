@@ -20,7 +20,7 @@ Current State
 -------------
 
 The game is ready to play on any windows computer although not extensively tested outside of my hardware/software stack.  The solution includes a
-windows installer project, or you can download the installer here: (TODO, put installer up somewhere.)
+windows installer project, or you can download the installer [from the project website](http://buzzcola.github.io/lightspeed-music/).
 
 Learning to Sight Read Music
 ----------------------------
