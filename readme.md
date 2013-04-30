@@ -1,4 +1,4 @@
-Lightspeed
+[Lightspeed](http://buzzcola.github.io/lightspeed-music/)
 ==========
 
 You can learn to sight read with Lightspeed.  Catchy, right?
