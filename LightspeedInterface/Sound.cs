@@ -10,6 +10,7 @@ namespace LightspeedInterface
     /// </summary>
     public enum Sound
     {
+        NewGameCountdown,
         NextFlashcard,
         ResultCorrect,
         ResultIncorrect,

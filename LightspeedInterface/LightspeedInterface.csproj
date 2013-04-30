@@ -1564,6 +1564,9 @@
     <EmbeddedResource Include="Images\61A-1_67E-1.png" />
     <EmbeddedResource Include="Images\62A-1_68E-1.png" />
     <Resource Include="lightspeed_icon.ico" />
+    <Content Include="Sounds\NewGameCountdown.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Sounds\NextFlashcard.wav">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

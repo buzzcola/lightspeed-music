@@ -27,9 +27,6 @@ namespace LightspeedInterface
         VirtualKeyboard _virtualKeyboard;
         Keyboard _virtualKeyboardWindow;
 
-        int flashcardSeconds { get { return 5; } }
-        int gameSeconds { get { return 60; } }
-        
         public MainWindow()
         {
             InitializeComponent();
@@ -61,14 +58,41 @@ namespace LightspeedInterface
         {
             if (Game == null || Game.GameMode == GameMode.Finished)
             {
-                Game = new Game(flashcardSeconds, gameSeconds, _virtualKeyboard);
+                var us = UserSettings.Instance;
+                Game = new Game(_virtualKeyboard);
+                Game.NewGameCountdown += new EventHandler<NewGameCountdownEventArgs>(Game_NewGameCountdown);
+                Game.GameStarted += new EventHandler(Game_GameStarted);
                 Game.FlashcardResponded += new EventHandler<FlashcardResultEventArgs>(Game_FlashcardResponded);
                 Game.NextFlashcard += new EventHandler<FlashcardEventArgs>(Game_NextFlashcard);
                 Game.FlashcardTimeExpired += new EventHandler<FlashcardEventArgs>(Game_FlashcardTimeExpired);
                 Game.GameTimeExpired += new EventHandler<GameOverEventArgs>(Game_GameTimeExpired);
+
                 DispatchUpdateScoreboard();
+                Dispatcher.Invoke((Action)(() =>
+                    {
+                        imgFlashcard.Source = null;
+                        lblCountdown.Content = "Ready!";
+                    }));
+
                 Game.Start();
             }
+        }
+
+        /// <summary>
+        /// The game has started, so hide the countdown label.
+        /// </summary>
+        void Game_GameStarted(object sender, EventArgs e)
+        {            
+            Dispatcher.Invoke((Action)(() => lblCountdown.Content = ""));
+        }
+
+        /// <summary>
+        /// When the countdown timer ticks, play a beep and show the time remaining until start.
+        /// </summary>
+        void Game_NewGameCountdown(object sender, NewGameCountdownEventArgs e)
+        {
+            SoundEffects.Play(Sound.NewGameCountdown);
+            Dispatcher.Invoke((Action)(() => lblCountdown.Content = e.SecondsToGo.ToString()));
         }
 
         /// <summary>
@@ -251,6 +275,18 @@ namespace LightspeedInterface
             if (_virtualKeyboardWindow == null || !_virtualKeyboardWindow.IsLoaded)
                 _virtualKeyboardWindow = new Keyboard(_virtualKeyboard);
             _virtualKeyboardWindow.Show();            
+        }
+
+        private void mnuWebsite_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://buzzcola.github.io/lightspeed-music/");
+        }
+
+        private void mnuVersion_Loaded(object sender, RoutedEventArgs e)
+        {
+            var assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName();            
+            var item = sender as MenuItem;
+            item.Header = "Lightspeed Version " + assemblyName.Version.ToString(2);
         }
     }
 }

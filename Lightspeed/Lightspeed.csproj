@@ -52,6 +52,7 @@
     <Compile Include="Interval.cs" />
     <Compile Include="IntervalDirection.cs" />
     <Compile Include="MultipleFlashcardGenerator.cs" />
+    <Compile Include="NewGameCountdownEventArgs.cs" />
     <Compile Include="TriadFlashcardGenerator.cs" />
     <Compile Include="FlashcardType.cs" />
     <Compile Include="StaffFlashcardGenerator.cs" />

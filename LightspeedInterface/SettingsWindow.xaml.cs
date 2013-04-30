@@ -31,23 +31,25 @@ namespace LightspeedInterface
         /// </summary>
         private void LoadSettings()
         {
-            var set = UserSettings.Instance;
+            var settings = UserSettings.Instance;
             var match = cmbInputDevice.Items.Cast<ComboBoxItem>()
-                .Where(cbi => (int?)cbi.Tag == set.MIDIInputDeviceNumber)
+                .Where(cbi => (int?)cbi.Tag == settings.MIDIInputDeviceNumber)
                 .FirstOrDefault();
             if (match != null)
                 match.IsSelected = true;
 
             match = cmbOutputDevice.Items.Cast<ComboBoxItem>()
-                .Where(cbi => (int?)cbi.Tag == set.MIDIOutputDeviceNumber)
+                .Where(cbi => (int?)cbi.Tag == settings.MIDIOutputDeviceNumber)
                 .FirstOrDefault();
 
             if (match != null)
                 match.IsSelected = true;
 
-            chkSingle.IsChecked = set.FlashcardTypes_Single ?? false;
-            chkInterval.IsChecked = set.FlashcardTypes_Interval ?? false;
-            chkTriad.IsChecked = set.FlashcardTypes_Triad ?? false;
+            chkSingle.IsChecked = settings.FlashcardTypes_Single ?? false;
+            chkInterval.IsChecked = settings.FlashcardTypes_Interval ?? false;
+            chkTriad.IsChecked = settings.FlashcardTypes_Triad ?? false;
+
+            txtMaxFlashcardTime.Text = settings.MaxFlashcardTime.ToString();
         }
 
         /// <summary>
@@ -71,26 +73,36 @@ namespace LightspeedInterface
         /// </summary>
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
-            SaveSettings();
-            Close();
+            if(SaveSettings())
+                Close();
         }
 
         /// <summary>
         /// Save all of the settings configured in these controls into the usersettings class.
         /// </summary>
-        private void SaveSettings()
+        private bool SaveSettings()
         {
-            var set = UserSettings.Instance;
+            int maxFlashcardTime;
+            if (!int.TryParse(txtMaxFlashcardTime.Text, out maxFlashcardTime) || maxFlashcardTime < 1)
+            {
+                MessageBox.Show("You must enter a whole number greater than zero for the Maximum Flashcard Time.");
+                return false;
+            }
+
+            var settings = UserSettings.Instance;
+            settings.MaxFlashcardTime = maxFlashcardTime;
+
             if (cmbInputDevice.SelectedItem != null)
-                set.MIDIInputDeviceNumber = (int?)((ComboBoxItem)cmbInputDevice.SelectedItem).Tag;
+                settings.MIDIInputDeviceNumber = (int?)((ComboBoxItem)cmbInputDevice.SelectedItem).Tag;
             if (cmbOutputDevice.SelectedItem != null)
-                set.MIDIOutputDeviceNumber = (int?)((ComboBoxItem)cmbOutputDevice.SelectedItem).Tag;
+                settings.MIDIOutputDeviceNumber = (int?)((ComboBoxItem)cmbOutputDevice.SelectedItem).Tag;
 
-            set.FlashcardTypes_Single = chkSingle.IsChecked;
-            set.FlashcardTypes_Interval = chkInterval.IsChecked;
-            set.FlashcardTypes_Triad = chkTriad.IsChecked;
+            settings.FlashcardTypes_Single = chkSingle.IsChecked;
+            settings.FlashcardTypes_Interval = chkInterval.IsChecked;
+            settings.FlashcardTypes_Triad = chkTriad.IsChecked;
 
-            set.Save();
+            settings.Save();
+            return true;
         }
 
         /// <summary>

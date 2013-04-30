@@ -8,6 +8,7 @@ namespace Lightspeed
     public enum GameMode
     {
         NotStarted,
+        CountingDownToStart,
         InFlashcard,
         BetweenFlashcards,
         Finished

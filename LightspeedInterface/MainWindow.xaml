@@ -4,7 +4,7 @@
         Title="Lightspeed" Height="379" Width="482" KeyDown="Window_KeyDown" WindowStartupLocation="CenterScreen">
 
         <DockPanel>
-            <Menu Height="23" Name="menu1" VerticalAlignment="Top" DockPanel.Dock="Top">
+            <Menu Height="23" Name="menu" VerticalAlignment="Top" DockPanel.Dock="Top">
                 <MenuItem Header="_File">
                     <MenuItem Name="mnuStart" Header="_Start Game (F5)" Click="mnuStart_Click" />
                     <MenuItem Name="mnuCancelGame" Header="_Cancel Game (Esc)" Click="mnuCancelGame_Click" />
@@ -13,6 +13,10 @@
             <MenuItem Header="_Settings">
                 <MenuItem Name="mnuShowKeyboard" Header="_Show Virtual Keyboard" Click="mnuShowKeyboard_Click" />
                 <MenuItem Name="mnuChangeSettings" Header="_Change Settings" Click="mnuChangeSettings_Click" />
+            </MenuItem>
+            <MenuItem Header="_About">
+                <MenuItem Name="mnuVersion" Header="" Loaded="mnuVersion_Loaded" />
+                <MenuItem Name="mnuWebsite" Header="Lightspeed on the Web" Click="mnuWebsite_Click" />
             </MenuItem>
         </Menu>
             <Grid DockPanel.Dock="Bottom">
@@ -52,6 +56,11 @@
                 <Label Grid.Column="2" Content="Score:" Name="label1" FontSize="14" Margin="7,0,0,0" />
                 
             </Grid>
+        <Grid>
             <Image Name="imgFlashcard" Width="100" Height="175" MaxWidth="100" MaxHeight="175" />
-        </DockPanel>
+            <Label Name="lblCountdown" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="36"></Label>
+        </Grid>
+            
+        
+    </DockPanel>
 </Window>

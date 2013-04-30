@@ -161,12 +161,12 @@ namespace Lightspeed
             set { this["FlashcardTypes_Triad"] = value; }
         }
 
-        [UserScopedSetting()]
-        [DefaultSettingValue(null)]
-        public ushort? SoundVolume
+        [UserScopedSetting]
+        [DefaultSettingValue("5")]
+        public int MaxFlashcardTime
         {
-            get { return (ushort?)this["SoundVolume"]; }
-            set { this["SoundVolume"] = value; }
+            get { return (int)this["MaxFlashcardTime"]; }
+            set { this["MaxFlashcardTime"] = value; }
         }
 
         #endregion

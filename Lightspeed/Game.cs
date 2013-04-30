@@ -14,10 +14,36 @@ namespace Lightspeed
     {
         #region Events
 
+        /// <summary>
+        /// Raised three times on a one-second interval before the game starts.
+        /// </summary>
+        public event EventHandler<NewGameCountdownEventArgs> NewGameCountdown;
+
+        /// <summary>
+        /// Raised when the game starts at the end of the countdown.
+        /// </summary>
+        public event EventHandler GameStarted;
+
+        /// <summary>
+        /// Raised when the game has moved to a new flashcard.
+        /// </summary>
         public event EventHandler<FlashcardEventArgs> NextFlashcard;
+
+        /// <summary>
+        /// Raised when the player has run out of time on the current flashcard.
+        /// </summary>
         public event EventHandler<FlashcardEventArgs> FlashcardTimeExpired;
+
+        /// <summary>
+        /// Raised when the user hits a key in response to a flashcard.
+        /// </summary>
         public event EventHandler<FlashcardResultEventArgs> FlashcardResponded;
+
+        /// <summary>
+        /// Raised when the game time has run out.
+        /// </summary>
         public event EventHandler<GameOverEventArgs> GameTimeExpired;
+
 
         #endregion
 
@@ -33,6 +59,11 @@ namespace Lightspeed
         /// have them wildly mashing the keys!
         /// </summary>
         const int POINTS_INCORRECT = -5;
+
+        /// <summary>
+        /// The length of one game, in seconds.
+        /// </summary>
+        const int GAME_DURATION = 60;
         
         #endregion
 
@@ -52,6 +83,11 @@ namespace Lightspeed
         /// Times the little pause in between flashcards.
         /// </summary>
         Timer _nextFlashcardTimer;
+
+        /// <summary>
+        /// Used for the countdown before a new game.
+        /// </summary>
+        Timer _newGameCountdownTimer;
 
         /// <summary>
         /// A MIDI input device to control the game.
@@ -119,7 +155,7 @@ namespace Lightspeed
         /// <param name="flashcardSeconds">The maximum number of seconds that the player has to respond to a flashcard.</param>
         /// <param name="gameSeconds">The length of the game.  At the end of this time, it's game over.</param>
         /// <param name="virtualKeyboards">If supplied, the game will take input from these as well as the configured MIDI input device (if any.)</param>
-        public Game(int flashcardSeconds, int gameSeconds, params VirtualKeyboard[] virtualKeyboards)
+        public Game(params VirtualKeyboard[] virtualKeyboards)
         {
             var settings = UserSettings.Instance;
 
@@ -148,9 +184,10 @@ namespace Lightspeed
             foreach(var vk in virtualKeyboards)            
                 vk.ChannelMessageReceived += new EventHandler<ChannelMessageEventArgs>(ChannelMessageReceived);
 
-            _gameTimer = new Timer(gameSeconds * 1000);
-            _flashcardTimer = new Timer(flashcardSeconds * 1000);
+            _gameTimer = new Timer(GAME_DURATION * 1000);
+            _flashcardTimer = new Timer(settings.MaxFlashcardTime * 1000);
             _nextFlashcardTimer = new Timer(500);
+            _newGameCountdownTimer = new Timer(1000);
             _nextFlashcardTimer.AutoReset = false;
             _gameTimer.Elapsed += new ElapsedEventHandler(GameTimer_Elapsed);
             _flashcardTimer.Elapsed += new ElapsedEventHandler(FlashcardTimer_Elapsed);
@@ -218,20 +255,48 @@ namespace Lightspeed
         #region Methods
 
         /// <summary>
-        /// Begin the game.
+        /// Start the game by firing up the new game countdown timer.
         /// </summary>
         public void Start()
         {
-            if (GameMode == Lightspeed.GameMode.NotStarted)
-            {
-                _gameStartTime = DateTime.Now;
-                GameMode = Lightspeed.GameMode.BetweenFlashcards;
-                if (_inputDevice != null)
-                    _inputDevice.StartRecording();
+            if (GameMode != Lightspeed.GameMode.NotStarted)
+                return;
 
-                _gameTimer.Start();
-                GotoNextFlashcard();
+            GameMode = Lightspeed.GameMode.CountingDownToStart;
+            int secondsToGo = 3;
+            _newGameCountdownTimer.Elapsed += (s, e) =>
+            {
+                if (secondsToGo == 0)
+                {
+                    _newGameCountdownTimer.Stop();
+                    BeginGame();
+                }
+                else
+                {
+                    if (NewGameCountdown != null)
+                        NewGameCountdown(this, new NewGameCountdownEventArgs(secondsToGo));
+                    secondsToGo--;
+                }
             };
+            _newGameCountdownTimer.Start();
+        }
+
+        /// <summary>
+        /// The countdown is complete, so start the game.
+        /// </summary>
+        private void BeginGame()
+        {
+            if (GameMode != Lightspeed.GameMode.CountingDownToStart)
+                return;
+
+            _gameStartTime = DateTime.Now;
+            GameMode = Lightspeed.GameMode.BetweenFlashcards;
+            if (_inputDevice != null)
+                _inputDevice.StartRecording();
+            if (GameStarted != null)
+                GameStarted(this, EventArgs.Empty);
+            _gameTimer.Start();
+            GotoNextFlashcard();
         }
 
         /// <summary>
