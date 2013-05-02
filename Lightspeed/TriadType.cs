@@ -14,6 +14,7 @@ namespace Lightspeed
         Major = 0x1, 
         Minor = 0x2,
         Augmented = 0x4,
-        Diminished = 0x8
+        Diminished = 0x8,
+        All = 0x7FFFFFFF
     }
 }

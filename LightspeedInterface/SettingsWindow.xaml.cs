@@ -50,6 +50,20 @@ namespace LightspeedInterface
             chkTriad.IsChecked = settings.FlashcardTypes_Triad ?? false;
 
             txtMaxFlashcardTime.Text = settings.MaxFlashcardTime.ToString();
+
+            if (settings.Accidentals != AccidentalType.Natural)
+                cmbAccidentals.SelectedIndex = 0;
+            else
+                cmbAccidentals.SelectedIndex = 1;
+
+            if (settings.Staffs == Staff.All)
+                cmbStaffs.SelectedIndex = 0;
+            else if (settings.Staffs == Staff.RightHand)
+                cmbStaffs.SelectedIndex = 1;
+            else
+                cmbStaffs.SelectedIndex = 2;
+
+            chkCheckForUpdates.IsChecked = settings.CheckForUpdates;
         }
 
         /// <summary>
@@ -100,6 +114,20 @@ namespace LightspeedInterface
             settings.FlashcardTypes_Single = chkSingle.IsChecked;
             settings.FlashcardTypes_Interval = chkInterval.IsChecked;
             settings.FlashcardTypes_Triad = chkTriad.IsChecked;
+
+            if (cmbStaffs.SelectedIndex == 0)
+                settings.Staffs = Staff.All;
+            else if (cmbStaffs.SelectedIndex == 1)
+                settings.Staffs = Staff.RightHand;
+            else
+                settings.Staffs = Staff.LeftHand;
+
+            if (cmbAccidentals.SelectedIndex == 0)
+                settings.Accidentals = AccidentalType.All;
+            else
+                settings.Accidentals = AccidentalType.Natural;
+
+            settings.CheckForUpdates = chkCheckForUpdates.IsChecked.Value;
 
             settings.Save();
             return true;

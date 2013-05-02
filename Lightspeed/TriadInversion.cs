@@ -13,6 +13,7 @@ namespace Lightspeed
     {
         Root = 0x1,
         First = 0x2,
-        Second = 0x4
+        Second = 0x4,
+        All = 0x7FFFFFFF
     }
 }

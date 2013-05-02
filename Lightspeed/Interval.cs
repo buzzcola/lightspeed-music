@@ -25,6 +25,7 @@ namespace Lightspeed
         MinorSeventh = 0x800,
         MajorSeventh = 0x1000,
         Octave = 0x2000,
+        All = 0x7FFFFFFF
     }
 
     public static class IntervalExtensions

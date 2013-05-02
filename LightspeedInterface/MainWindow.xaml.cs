@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using Lightspeed;
 using System.Resources;
 using System.Media;
+using System.Net;
 
 namespace LightspeedInterface
 {
@@ -44,6 +45,34 @@ namespace LightspeedInterface
 
             if (us.ShowVirtualKeyboard)
                 ShowVirtualKeyboard();
+
+            if(us.CheckForUpdates)
+                CheckForUpdates();
+        }
+
+        private void CheckForUpdates()
+        {
+            var client = new WebClient();
+            client.DownloadStringCompleted += new DownloadStringCompletedEventHandler(CheckForUpdates_Callback);
+            client.DownloadStringAsync(new Uri("http://buzzcola.github.io/lightspeed-music/version"));            
+        }
+
+        private void CheckForUpdates_Callback(object sender, DownloadStringCompletedEventArgs e)
+        {
+            if (e.Cancelled || e.Error != null) // web request didn't work for some reason, don't bug the user.
+                return;
+
+            var assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName();            
+            var currentVersion = assemblyName.Version.ToString(2);
+            var latestVersion = e.Result;
+
+            if (currentVersion != latestVersion)
+            {
+                if (MessageBox.Show("A new version of Lightspeed is out.  Do you want to get it?", "New Version Available", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    OpenProjectWebsite();
+                }
+            }
         }
 
         private void mnuStart_Click(object sender, RoutedEventArgs e)
@@ -278,6 +307,11 @@ namespace LightspeedInterface
         }
 
         private void mnuWebsite_Click(object sender, RoutedEventArgs e)
+        {
+            OpenProjectWebsite();
+        }
+
+        private static void OpenProjectWebsite()
         {
             System.Diagnostics.Process.Start("http://buzzcola.github.io/lightspeed-music/");
         }

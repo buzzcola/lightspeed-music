@@ -12,6 +12,7 @@ namespace Lightspeed
     public enum Staff
     {
         RightHand = 0x1,
-        LeftHand = 0x2
+        LeftHand = 0x2,
+        All = 0x7FFFFFFF
     }
 }

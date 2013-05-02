@@ -13,12 +13,12 @@ namespace Lightspeed
         /// <summary>
         /// This flags enum determines the types of triads that will be generated.
         /// </summary>
-        public readonly TriadType? TriadTypes;
+        public readonly TriadType TriadTypes;
 
         /// <summary>
         /// This flags enum determines the inversions that will be generated.
         /// </summary>
-        public readonly TriadInversion? TriadInversions;
+        public readonly TriadInversion TriadInversions;
                 
         /// <summary>
         /// Creates a new TriadFlashcardGenerator.
@@ -26,11 +26,23 @@ namespace Lightspeed
         /// <param name="triadTypes">This flags value indicates which types of triads to include.</param>
         /// <param name="triadInversions">This flags value indicates which triad inversions to include.</param>
         /// <param name="staffs">This flags value indicates which staffs to include.</param>
-        public TriadFlashcardGenerator(TriadType? triadTypes = null, TriadInversion? triadInversions = null, Staff? staffs = null)
-            :base(staffs)
+        public TriadFlashcardGenerator(
+            TriadType triadTypes = TriadType.All, 
+            TriadInversion triadInversions = 
+            TriadInversion.All, 
+            AccidentalType accidentals = AccidentalType.All, 
+            Staff staffs = Staff.All)
+            :base(staffs, accidentals)
         {
+            TriadInversions = triadInversions; 
             TriadTypes = triadTypes;
-            TriadInversions = triadInversions;
+            
+            if (accidentals == AccidentalType.Natural)
+            {
+                // there just aren't enough diminished and augmented triads representable without accidentals, so skip them.
+                TriadTypes &= ~TriadType.Augmented;
+                TriadTypes &= ~TriadType.Diminished;
+            }
         }
 
         protected override IEnumerable<Flashcard> GenerateFlashcards(Staff stave, int lower, int upper)
@@ -41,16 +53,18 @@ namespace Lightspeed
                 {
                     foreach (TriadType type in Enum.GetValues(typeof(TriadType)))
                     {
-                        if (TriadTypes.HasValue && !TriadTypes.Value.HasFlag(type)) continue;
+                        if (type == TriadType.All) continue;
+                        if (!TriadTypes.HasFlag(type)) continue;
 
                         if (type == TriadType.Minor || type == TriadType.Major) // invertible types
                         {
                             foreach (TriadInversion inversion in Enum.GetValues(typeof(TriadInversion)))
                             {
-                                if (TriadInversions.HasValue && !TriadInversions.Value.HasFlag(inversion)) continue;
+                                if (inversion == TriadInversion.All) continue;
+                                if (!TriadInversions.HasFlag(inversion)) continue;
 
                                 var triad = MakeTriad(rep, type, inversion);
-                                if (triad != null)
+                                if (triad != null && triad.All(r => Accidentals.HasFlag(r.Accidental)))
                                 {
                                     var staffNotes = triad.Select(r => new StaffNote(r, stave)).ToArray();
                                     if (staffNotes.Last().NoteRepresentation.Note.Number <= upper) // only return chords that fit within the upper bound.
@@ -64,7 +78,7 @@ namespace Lightspeed
                         else 
                         {
                             var triad = MakeTriad(rep, type);
-                            if (triad != null)
+                            if (triad != null && triad.All(r => Accidentals.HasFlag(r.Accidental)))
                             {
                                 var staffNotes = triad.Select(r => new StaffNote(r, stave)).ToArray();
                                 if (staffNotes.Last().NoteRepresentation.Note.Number <= upper) // only return chords that fit within the upper bound.
@@ -118,8 +132,8 @@ namespace Lightspeed
         /// </summary>        
         public override Flashcard Next()
         {
-            var typeArray = Enum.GetValues(typeof(TriadType)) as TriadType[];
-            var selectedTypes = typeArray.Where(t => !TriadTypes.HasValue || TriadTypes.Value.HasFlag(t)).ToArray();
+            var typeArray = Enum.GetValues(typeof(TriadType)).Cast<TriadType>().Where(t => t != TriadType.All).ToArray();
+            var selectedTypes = typeArray.Where(t => TriadTypes.HasFlag(t)).ToArray();
 
             if (selectedTypes.Count() > 1)
             {
@@ -130,9 +144,9 @@ namespace Lightspeed
                 {
                     _generators = new TriadFlashcardGenerator[selectedTypes.Count()];
                     for (int i = 0; i < _generators.Length; i++)
-                        _generators[i] = new TriadFlashcardGenerator(selectedTypes[i], TriadInversions);
+                        _generators[i] = new TriadFlashcardGenerator(selectedTypes[i], TriadInversions, Accidentals, Staffs);
                 }
-                var randomType = r.Next(typeArray.Length);
+                var randomType = r.Next(selectedTypes.Length);
                 return _generators[randomType].Next();
             }
             

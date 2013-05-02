@@ -69,6 +69,8 @@ namespace Lightspeed
 
         #region User Settings
 
+        #region MIDI
+
         [UserScopedSetting()]
         [DefaultSettingValue(null)]
         public int? MIDIInputDeviceNumber
@@ -113,6 +115,18 @@ namespace Lightspeed
             set { this["ShowVirtualKeyboard"] = value; }
         }
 
+        #endregion
+
+        #region Misc.
+
+        [UserScopedSetting()]
+        [DefaultSettingValue("true")]
+        public bool CheckForUpdates
+        {
+            get { return (bool)this["CheckForUpdates"]; }
+            set { this["CheckForUpdates"] = value; }
+        }
+
         [UserScopedSetting()]
         [DefaultSettingValue(null)]
         public Point? WindowLocation_Main
@@ -137,6 +151,10 @@ namespace Lightspeed
             set { this["WindowLocation_VirtualKeyboard"] = value; }
         }
 
+        #endregion
+
+        #region Gameplay
+        
         [UserScopedSetting()]
         [DefaultSettingValue(null)]
         public bool? FlashcardTypes_Single
@@ -168,6 +186,24 @@ namespace Lightspeed
             get { return (int)this["MaxFlashcardTime"]; }
             set { this["MaxFlashcardTime"] = value; }
         }
+
+        [UserScopedSetting]
+        [DefaultSettingValue("All")]
+        public Staff Staffs
+        {
+            get { return (Staff)this["Staffs"]; }
+            set { this["Staffs"] = value; }
+        }
+
+        [UserScopedSetting]
+        [DefaultSettingValue("All")]
+        public AccidentalType Accidentals
+        {
+            get { return (AccidentalType)this["Accidentals"]; }
+            set { this["Accidentals"] = value; }
+        }
+
+        #endregion
 
         #endregion
 
