@@ -20,9 +20,12 @@ namespace Lightspeed
         /// </summary>
         /// <param name="intervalTypes">This flags value idnicates which types of intervals will be generated.</param>
         /// <param name="staffs">This flags value indicates which staffs to include.</param>
-        public IntervalFlashcardGenerator(Interval intervalTypes = Interval.All, Staff staffs = Staff.All, AccidentalType accidentals = AccidentalType.All):base(staffs, accidentals)
+        public IntervalFlashcardGenerator(IntervalFlashcardGeneratorArgs args):base(args)
         {
-            IntervalTypes = intervalTypes;
+            if (args.IntervalTypes == 0)
+                throw new ArgumentException("Need at least one interval type to construct an interval flashcard generator.");
+
+            IntervalTypes = args.IntervalTypes;
         }
 
         protected override IEnumerable<Flashcard> GenerateFlashcards(Staff staff, int lower, int upper)

@@ -24,10 +24,15 @@ namespace Lightspeed
         /// Creates a new StaffFlashcardGenerator.
         /// </summary>
         /// <param name="staffs">This flags value indicates which staffs to include.</param>
-        public StaffFlashcardGenerator(Staff staffs, AccidentalType accidentals)
+        public StaffFlashcardGenerator(StaffFlashcardGeneratorArgs args)
         {
-            Staffs = staffs;
-            Accidentals = accidentals;
+            if (args.Staffs == 0)
+                throw new ArgumentException("Need at least one Staff to construct a staff flashcard generator.");
+            if (args.Accidentals == 0)
+                throw new ArgumentException("Need at least one accidental type to construct a staff flashcard generator.");
+
+            Staffs = args.Staffs;
+            Accidentals = args.Accidentals;
         }
 
         /// <summary>

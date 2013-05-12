@@ -14,7 +14,7 @@ namespace Lightspeed
         /// Creates a new SingleNoteFlashcardGenerator.
         /// </summary>
         /// <param name="staffs">This flags value indicates which staffs to include.</param>
-        public SingleNoteFlashcardGenerator(Staff staffs = Staff.All, AccidentalType accidentals = AccidentalType.All) : base(staffs, accidentals) { }
+        public SingleNoteFlashcardGenerator(StaffFlashcardGeneratorArgs args) : base(args) { }
 
         /// <summary>
         /// Make flashcards for all supported single notes.

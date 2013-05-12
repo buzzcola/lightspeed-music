@@ -68,9 +68,9 @@ namespace Lightspeed
             
             // write all LY files to working.
             var generator = new MultipleFlashcardGenerator(
-                new SingleNoteFlashcardGenerator(),
-                new IntervalFlashcardGenerator(),
-                new TriadFlashcardGenerator());
+                new SingleNoteFlashcardGenerator(StaffFlashcardGeneratorArgs.All),
+                new IntervalFlashcardGenerator(IntervalFlashcardGeneratorArgs.All),
+                new TriadFlashcardGenerator(TradFlashcardGeneratorArgs.All));
             var filePaths = new List<string>();
             
             foreach (var flashcard in generator.GenerateFlashcards().Take(5))

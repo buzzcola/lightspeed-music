@@ -49,10 +49,13 @@
   <ItemGroup>
     <Compile Include="AccidentalType.cs" />
     <Compile Include="FlashcardGenerator.cs" />
+    <Compile Include="IntervalFlashcardGeneratorArgs.cs" />
+    <Compile Include="StaffFlashcardGeneratorArgs.cs" />
     <Compile Include="Interval.cs" />
     <Compile Include="IntervalDirection.cs" />
     <Compile Include="MultipleFlashcardGenerator.cs" />
     <Compile Include="NewGameCountdownEventArgs.cs" />
+    <Compile Include="TradFlashcardGeneratorArgs.cs" />
     <Compile Include="TriadFlashcardGenerator.cs" />
     <Compile Include="FlashcardType.cs" />
     <Compile Include="StaffFlashcardGenerator.cs" />

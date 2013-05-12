@@ -161,11 +161,32 @@ namespace Lightspeed
 
             var types = new List<FlashcardGenerator>();
             if (settings.FlashcardTypes_Triad == true)
-                types.Add(new TriadFlashcardGenerator(TriadType.All, TriadInversion.All, settings.Accidentals, settings.Staffs));
+            {
+                types.Add(new TriadFlashcardGenerator(new TradFlashcardGeneratorArgs()
+                { 
+                    TriadTypes = TriadType.All, 
+                    TriadInversions = TriadInversion.All, 
+                    Accidentals = settings.Accidentals, 
+                    Staffs = settings.Staffs
+                }));
+            }
             if (settings.FlashcardTypes_Interval == true)
-                types.Add(new IntervalFlashcardGenerator(Interval.All, settings.Staffs, settings.Accidentals));
+            {
+                types.Add(new IntervalFlashcardGenerator(new IntervalFlashcardGeneratorArgs()
+                {
+                    IntervalTypes = Interval.All,
+                    Staffs = settings.Staffs,
+                    Accidentals = settings.Accidentals
+                }));
+            }
             if (settings.FlashcardTypes_Single == true || !types.Any()) // if they set no flashcard types, give them single.
-                types.Add(new SingleNoteFlashcardGenerator(settings.Staffs, settings.Accidentals));
+            {
+                types.Add(new SingleNoteFlashcardGenerator(new StaffFlashcardGeneratorArgs()
+                    {
+                        Staffs = settings.Staffs,
+                        Accidentals = settings.Accidentals
+                    }));
+            }
 
             _flashcardSource = new MultipleFlashcardGenerator(types.ToArray());
             _currentResponse = new Dictionary<Note, bool>();

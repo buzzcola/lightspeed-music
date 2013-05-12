@@ -26,18 +26,18 @@ namespace Lightspeed
         /// <param name="triadTypes">This flags value indicates which types of triads to include.</param>
         /// <param name="triadInversions">This flags value indicates which triad inversions to include.</param>
         /// <param name="staffs">This flags value indicates which staffs to include.</param>
-        public TriadFlashcardGenerator(
-            TriadType triadTypes = TriadType.All, 
-            TriadInversion triadInversions = 
-            TriadInversion.All, 
-            AccidentalType accidentals = AccidentalType.All, 
-            Staff staffs = Staff.All)
-            :base(staffs, accidentals)
+        public TriadFlashcardGenerator(TradFlashcardGeneratorArgs args)
+            :base(args)
         {
-            TriadInversions = triadInversions; 
-            TriadTypes = triadTypes;
+            if(args.TriadInversions == 0)
+                throw new ArgumentException("Need at least one triad inversion to construct a triad flashcard generator.");
+            if (args.TriadTypes == 0)
+                throw new ArgumentException("Need at least one triad type to construct a triad flashcard generator.");
+
+            TriadInversions = args.TriadInversions;
+            TriadTypes = args.TriadTypes;
             
-            if (accidentals == AccidentalType.Natural)
+            if (Accidentals == AccidentalType.Natural)
             {
                 // there just aren't enough diminished and augmented triads representable without accidentals, so skip them.
                 TriadTypes &= ~TriadType.Augmented;
@@ -144,7 +144,14 @@ namespace Lightspeed
                 {
                     _generators = new TriadFlashcardGenerator[selectedTypes.Count()];
                     for (int i = 0; i < _generators.Length; i++)
-                        _generators[i] = new TriadFlashcardGenerator(selectedTypes[i], TriadInversions, Accidentals, Staffs);
+                    {
+                        var args = new TradFlashcardGeneratorArgs();
+                        args.TriadTypes = selectedTypes[i];
+                        args.TriadInversions = TriadInversions;
+                        args.Accidentals = Accidentals;
+                        args.Staffs = Staffs;
+                        _generators[i] = new TriadFlashcardGenerator(args);
+                    }
                 }
                 var randomType = r.Next(selectedTypes.Length);
                 return _generators[randomType].Next();
